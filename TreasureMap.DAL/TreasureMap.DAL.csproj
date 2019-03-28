@@ -43,7 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adventurer.cs" />
+    <Compile Include="DataMap.cs" />
+    <Compile Include="IDataMap.cs" />
+    <Compile Include="Map.cs" />
+    <Compile Include="Mountain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Treasure.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
