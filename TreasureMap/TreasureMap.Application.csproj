@@ -49,5 +49,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TreasureMap.DAL\TreasureMap.DAL.csproj">
+      <Project>{BA9E8A88-E6D1-414D-AD24-7A7B86117FCB}</Project>
+      <Name>TreasureMap.DAL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
