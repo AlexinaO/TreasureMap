@@ -67,8 +67,27 @@ namespace TreasureMap
             DisplayMountainList(service.GetMountains());
             DisplayTreasureList(service.GetTreasures());
             DisplayAdventurerList(service.GetAdventurers());
+            Console.WriteLine();
+            Console.WriteLine("Faire partir les aventuriers à la recherche des trésors (O/N) ?");
+            var adventureOrNot = Console.ReadLine();
+            switch(adventureOrNot)
+            {
+                case "O":
+                case "o":
+                    //AdventurersOnTheGo();
+                    break;
+                case "N":
+                case "n":
+                    BackToTheMenu();
+                    break;
+                default:
+                    Console.WriteLine("Choix invalide, l'application va fermer...");
+                    break;
+            }
             Console.ReadKey();
         }
+
+        
 
         static void DisplayMap(Map map)
         {
@@ -109,6 +128,26 @@ namespace TreasureMap
             }
             Console.WriteLine();
         }
+
+        private static void BackToTheMenu()
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n>Appuyer sur une touche pour revenir au menu...");
+            Console.ReadKey();
+        }
+
+        //private static void AdventurersOnTheGo(IEnumerable<Adventurer>AdventurerList)
+        //{
+        //    foreach (var adventurer in AdventurerList)
+        //    {
+        //        var move = adventurer.Movement;
+        //        foreach(var letter in move)
+        //        {
+
+        //        }
+        //    }
+        //}
 
 
 
