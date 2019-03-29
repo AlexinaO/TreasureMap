@@ -8,8 +8,7 @@ namespace TreasureMap.DAL
 {
     public class Treasure
     {
-        const char TreasureCode = 'T';
-
+		public string Code { get; set; }
         public int TreasureVerticalAxis { get; set; }
         public int TreasureHorizontalAxis { get; set; }
         public int TreasureNumber { get; set; }
