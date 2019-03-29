@@ -6,7 +6,7 @@ namespace TreasureMap.DAL
     public class DataMap : IDataMap
     {
         const string FilePath = "TreasureMap.txt";
-        const char FieldSeparator = '-';
+        const string FieldSeparator = " - ";
 
         private Map Map;
         private List<Adventurer> adventurers;
