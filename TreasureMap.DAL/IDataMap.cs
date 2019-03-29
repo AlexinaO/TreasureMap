@@ -8,8 +8,14 @@ namespace TreasureMap.DAL
 {
     public interface IDataMap
     {
-        IEnumerable<Map> GetData();
+        Map GetDataMap();
 
-        void ExitFile(Map map);
+        IEnumerable<Adventurer> GetAdventurersList();
+
+        IEnumerable<Treasure> GetTreasuresList();
+
+        IEnumerable<Mountain> GetMountainsList();
+
+        void ExitFile(Map map, Adventurer adventurer, Treasure treasure, Mountain mountain);
     }
 }
