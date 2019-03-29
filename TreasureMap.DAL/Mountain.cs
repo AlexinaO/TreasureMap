@@ -8,7 +8,7 @@ namespace TreasureMap.DAL
 {
     public class Mountain
     {
-        const char MountainCode = 'M';
+		public string Code { get; set; }
         public int MountainVerticalAxis { get; set; }
         public int MountainHorizontalAxis { get; set; }
     }
