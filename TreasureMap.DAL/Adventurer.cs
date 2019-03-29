@@ -2,7 +2,7 @@
 {
     public class Adventurer
     {
-        const char AdventurerCode = 'A';
+		public string Code { get; set; }
         public string Name { get; set; }
         public int AdventurerHorizontalAxis { get; set; }
         public int AdventurerVerticalAxis { get; set; }
