@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TreasureMap.Business;
@@ -10,6 +9,8 @@ namespace TreasureMap
     class Program
     {
         static IServiceData service = new ServiceData();
+
+        public static bool ToMove { get; set; }
 
         static void Main(string[] args)
         {
@@ -34,7 +35,7 @@ namespace TreasureMap
             }
         }
 
-       
+
 
         ///<summary>
         ///Display the entrance page with a menu
@@ -70,11 +71,11 @@ namespace TreasureMap
             Console.WriteLine();
             Console.WriteLine("Faire partir les aventuriers à la recherche des trésors (O/N) ?");
             var adventureOrNot = Console.ReadLine();
-            switch(adventureOrNot)
+            switch (adventureOrNot)
             {
                 case "O":
                 case "o":
-                    //AdventurersOnTheGo();
+                    AdventurersOnTheGo(service.GetAdventurers());
                     break;
                 case "N":
                 case "n":
@@ -87,8 +88,6 @@ namespace TreasureMap
             Console.ReadKey();
         }
 
-        
-
         static void DisplayMap(Map map)
         {
             Console.WriteLine($"La carte fait {map.WidthBoxesNumber} cases en largeur " +
@@ -96,7 +95,7 @@ namespace TreasureMap
             Console.WriteLine();
         }
 
-        static void DisplayMountainList(IEnumerable<Mountain>MountainList)
+        static void DisplayMountainList(IEnumerable<Mountain> MountainList)
         {
             Console.WriteLine("La liste des montagnes est la suivante :");
             foreach (var mountain in MountainList)
@@ -106,10 +105,10 @@ namespace TreasureMap
             Console.WriteLine();
         }
 
-        static void DisplayTreasureList(IEnumerable<Treasure>TreasureList)
+        static void DisplayTreasureList(IEnumerable<Treasure> TreasureList)
         {
             Console.WriteLine("La liste des trésors est la suivante :");
-            foreach(var treasure in TreasureList)
+            foreach (var treasure in TreasureList)
             {
                 Console.WriteLine($"{treasure.TreasureNumber} trésor(s) avec les coordonnées " +
                     $"({treasure.TreasureHorizontalAxis},{treasure.TreasureVerticalAxis})");
@@ -117,7 +116,7 @@ namespace TreasureMap
             Console.WriteLine();
         }
 
-        static void DisplayAdventurerList(IEnumerable<Adventurer>AdventurerList)
+        static void DisplayAdventurerList(IEnumerable<Adventurer> AdventurerList)
         {
             Console.WriteLine($"{AdventurerList.Count()} Chercheur(s) de trésors en compétition:");
             foreach (var adventurer in AdventurerList)
@@ -137,20 +136,120 @@ namespace TreasureMap
             Console.ReadKey();
         }
 
-        //private static void AdventurersOnTheGo(IEnumerable<Adventurer>AdventurerList)
-        //{
-        //    foreach (var adventurer in AdventurerList)
-        //    {
-        //        var move = adventurer.Movement;
-        //        foreach(var letter in move)
-        //        {
 
-        //        }
-        //    }
-        //}
+        private static void AdventurersOnTheGo(IEnumerable<Adventurer> AdventurerList)
+        {
+            //Determination of the maximum movement number
+            int maxMovementNumber = 0;
+            foreach (var adventurer in AdventurerList)
+            {
+                var movementNumber = adventurer.Movement.Length;
+                if (movementNumber > maxMovementNumber)
+                {
+                    maxMovementNumber = movementNumber;
+                }
+            }
+            Console.WriteLine(maxMovementNumber);
+
+
+            for (int i = 0; i < maxMovementNumber; i++)
+            {
+                foreach (var adventurer in AdventurerList)
+                {
+                    if (i < adventurer.MovementNumber)
+                    {
+                        int hAxis = adventurer.AdventurerHorizontalAxis;
+                        int vAxis = adventurer.AdventurerVerticalAxis;
+
+                        if(adventurer.Movement[i] =='A')
+                        {
+                            NextBox(adventurer);
+
+                            bool ToMove = true;
+                            if (adventurer.Orientation =="S")
+                            {
+                                
+                                CheckMountain(service.GetMountains(),hAxis,vAxis);
+                                adventurer.AdventurerHorizontalAxis = adventurer.AdventurerHorizontalAxis;
+                                adventurer.AdventurerVerticalAxis = adventurer.AdventurerVerticalAxis + 1;
+                            }
+                        }
 
 
 
 
+                        if ((adventurer.Orientation == "S" || adventurer.Orientation == "N" || adventurer.Orientation == "E" || adventurer.Orientation == "O")
+                            && adventurer.Movement[i] == 'A')
+                        {
+                            //FindMountain(service.GetMountains(), service.GetAdventurers());    
+                            //si montagne avec verticalaxis = adventurerVerticalAxis et avec horizontalaxis = adventurerHorizontalAxis
+                            adventurer.AdventurerVerticalAxis = adventurer.AdventurerVerticalAxis + 1;
+                            adventurer.AdventurerHorizontalAxis = adventurer.AdventurerHorizontalAxis;
+                            continue;
+                        }
+
+                        Console.WriteLine($"{adventurer.Name} - {adventurer.Movement[i]}");
+
+                        if (adventurer.Orientation == "S" && adventurer.Movement[i] == 'G')
+                        {
+                            continue;
+
+                        }
+                        if (adventurer.Orientation == "S" && adventurer.Movement[i] == 'D')
+                        {
+                            continue;
+                        }
+                        if (adventurer.Orientation == "N")
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                        continue;
+                }
+            }
+
+        }
+
+        private static Array NextBox(Adventurer adventurer)
+        {
+            int[] xy = new int [] {adventurer.AdventurerHorizontalAxis, adventurer.AdventurerVerticalAxis};
+            if (adventurer.Orientation == "E")
+            {
+                xy[0] = adventurer.AdventurerHorizontalAxis + 1;
+            }
+            else if (adventurer.Orientation == "O")
+            {
+                xy[0] = adventurer.AdventurerHorizontalAxis - 1;
+            }
+            else if (adventurer.Orientation == "S")
+            {
+                xy[1] = adventurer.AdventurerVerticalAxis + 1;
+            }
+            else if (adventurer.Orientation == "N")
+            {
+                xy[1] = adventurer.AdventurerVerticalAxis - 1;
+            }
+            else
+            {
+                throw new MessageException("L'orientation doit être : N pour nord, S pour Sud,  ");
+            }
+
+
+
+
+            return xy;
+        }
+
+        private static bool CheckMountain(IEnumerable<Mountain> MountainList, int hAxis, int vAxis)
+        {
+            foreach (var mountain in MountainList)
+            {
+                if (mountain.MountainHorizontalAxis == hAxis && mountain.MountainVerticalAxis)
+            }
+
+            
+            return ToMove = false ;
+        }
     }
 }
