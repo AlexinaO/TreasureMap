@@ -79,7 +79,6 @@ namespace TreasureMap.DAL
                             {
                                 if (this.map.Code == null)
                                 {
-                                    //var map = new Map();
                                     map.Code = fields[0];
                                     map.WidthBoxesNumber = int.Parse(fields[1]);
                                     map.HeightBoxesNumber = int.Parse(fields[2]);
