@@ -8,18 +8,18 @@ namespace TreasureMap.DAL
         const string FilePath = "TreasureMap.txt";
         const char FieldSeparator = '-';
 
-        private Map map;
-        private List<Adventurer> adventurers;
-        private List<Treasure> treasures;
-        private List<Mountain> mountains;
+        public Map currentMap;
+        public List<Adventurer> adventurers;
+        public List<Treasure> treasures;
+        public List<Mountain> mountains;
 
         public Map GetDataMap()
         {
-            if (this.map == null)
+            if (this.currentMap == null)
             {
                 ReadFile();
             }
-            return this.map;
+            return this.currentMap;
         }
 
         public IEnumerable<Adventurer> GetAdventurersList()
@@ -57,7 +57,7 @@ namespace TreasureMap.DAL
 
         private void ReadFile()
         {
-            this.map = new Map();
+            this.currentMap = new Map();
             this.adventurers = new List<Adventurer>();
             this.mountains = new List<Mountain>();
             this.treasures = new List<Treasure>();
@@ -77,11 +77,11 @@ namespace TreasureMap.DAL
 
                             if (textLine.StartsWith("C"))
                             {
-                                if (this.map.Code == null)
+                                if (this.currentMap.Code == null)
                                 {
-                                    map.Code = fields[0];
-                                    map.WidthBoxesNumber = int.Parse(fields[1]);
-                                    map.HeightBoxesNumber = int.Parse(fields[2]);
+                                    currentMap.Code = fields[0];
+                                    currentMap.WidthBoxesNumber = int.Parse(fields[1]);
+                                    currentMap.HeightBoxesNumber = int.Parse(fields[2]);
                                     continue;
                                 }
                                 else
