@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using TreasureMap.Business;
@@ -9,15 +9,11 @@ namespace TreasureMap
     class Program
     {
         public static IServiceData service = new ServiceData();
-
-        public static bool ToMove { get; set; }
-
         public static bool Moving { get; set; }
 
         public static void Main(string[] args)
         {
             bool ToContinue = true;
-
             while (ToContinue)
             {
                 var choice = PlayOrNot();
@@ -37,8 +33,6 @@ namespace TreasureMap
                 }
             }
         }
-
-
 
         ///<summary>
         ///Display the entrance page with a menu
@@ -71,9 +65,9 @@ namespace TreasureMap
             Map myMap = myDataMap.GetDataMap();
 
             DisplayMap(myMap);
-            DisplayMountainList(myMountains);
-            DisplayTreasureList(mytreasures);
-            DisplayAdventurerList(myAdventurers);
+            DisplayMountainList(service.GetMountains());
+            DisplayTreasureList(service.GetTreasures());
+            DisplayAdventurerList(service.GetAdventurers());
             Console.WriteLine();
             Console.WriteLine("Faire partir les aventuriers à la recherche des trésors (O/N) ?");
             var adventureOrNot = Console.ReadLine();
@@ -81,7 +75,7 @@ namespace TreasureMap
             {
                 case "O":
                 case "o":
-                    AdventurersOnTheGo(myAdventurers, myMap, myMountains, mytreasures);
+                    AdventurersOnTheGo(service.GetAdventurers(), myMap, service.GetMountains(), service.GetTreasures());
                     break;
                 case "N":
                 case "n":
@@ -163,6 +157,7 @@ namespace TreasureMap
             Console.WriteLine($"Nombre de mouvements maximal : {maxMovementNumber}");
 
 
+            //Loop for the game
             for (int i = 0; i < maxMovementNumber; i++)
             {
                 foreach (var adventurer in AdventurerList)
@@ -215,6 +210,10 @@ namespace TreasureMap
                                 adventurer.AdventurerVerticalAxis = NextBox(adventurer)[1];
                             }
                         }
+                        else
+                        {
+                            throw new MessageException($"{adventurer.Name} n'a aucun mouvement valide.");
+                        }
                         Console.WriteLine($"Tour n° {i + 1}");
                         Console.WriteLine($"{adventurer.Name} - {adventurer.Movement[i]} - " +
                             $"{adventurer.Orientation} - {adventurer.AdventurerHorizontalAxis} - " +
@@ -225,8 +224,18 @@ namespace TreasureMap
                         continue;
                 }
             }
-
+            DataMap exitDataMap = new DataMap()
+            {
+                currentMap = myMap,
+                adventurers = AdventurerList.ToList(),
+                mountains = MountainList.ToList(),
+                treasures = TreasureList.ToList()
+            };
+            service.CreateExitData(exitDataMap);
+            Console.WriteLine("Le fichier de sortie a été enregistré avec succès dans le répertoire suivant:");
+            Console.WriteLine("TreasureMap\\bin\\Debug");
         }
+
         /// <summary>
         /// Method to know the coordinates of the next box where the adventurer will go
         /// </summary>
@@ -361,6 +370,5 @@ namespace TreasureMap
             }
             return selectedTreasure;
         }
-
     }
 }
