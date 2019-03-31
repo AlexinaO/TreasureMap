@@ -81,7 +81,7 @@ namespace TreasureMap
             {
                 case "O":
                 case "o":
-                    AdventurersOnTheGo(service.GetAdventurers(), myMap, service.GetMountains());
+                    AdventurersOnTheGo(service.GetAdventurers(), myMap, service.GetMountains(), service.GetTreasures());
                     break;
                 case "N":
                 case "n":
@@ -143,7 +143,7 @@ namespace TreasureMap
         }
 
 
-        private static void AdventurersOnTheGo(IEnumerable<Adventurer> AdventurerList, Map myMap, IEnumerable<Mountain> MountainList)
+        private static void AdventurersOnTheGo(IEnumerable<Adventurer> AdventurerList, Map myMap, IEnumerable<Mountain> MountainList, IEnumerable<Treasure> TreasureList)
         {
             //Determination of the maximum movement number
             int maxMovementNumber = 0;
@@ -205,6 +205,12 @@ namespace TreasureMap
                         {
                             if (AllowToMove(adventurer, myMap, MountainList, AdventurerList, NextBox(adventurer)))
                             {
+                                if (CheckTreasure(TreasureList, NextBox(adventurer)[0], NextBox(adventurer)[1]) == true)
+                                {
+                                    adventurer.TreasureFound = adventurer.TreasureFound + 1;
+                                    SelectTreasure(TreasureList, NextBox(adventurer)[0], NextBox(adventurer)[1]).TreasureNumber 
+                                        = SelectTreasure(TreasureList, NextBox(adventurer)[0], NextBox(adventurer)[1]).TreasureNumber - 1;
+                                }
                                 adventurer.AdventurerHorizontalAxis = NextBox(adventurer)[0];
                                 adventurer.AdventurerVerticalAxis = NextBox(adventurer)[1];
                             }
@@ -212,7 +218,8 @@ namespace TreasureMap
                         Console.WriteLine($"Tour n° {i + 1}");
                         Console.WriteLine($"{adventurer.Name} - {adventurer.Movement[i]} - " +
                             $"{adventurer.Orientation} - {adventurer.AdventurerHorizontalAxis} - " +
-                            $"{adventurer.AdventurerVerticalAxis}");
+                            $"{adventurer.AdventurerVerticalAxis} - " +
+                            $"Nombre de trésors trouvés : {adventurer.TreasureFound}");
                     }
                     else
                         continue;
@@ -302,7 +309,7 @@ namespace TreasureMap
         }
 
         /// <summary>
-        /// Checkx if there is an adventurer in the box where the adventurer will go
+        /// Checks if there is an adventurer in the box where the adventurer will go
         /// </summary>
         /// <param name="AdventurerList"></param>
         /// <param name="hAxis"></param>
@@ -319,6 +326,40 @@ namespace TreasureMap
                 }
             }
             return boxWithAdventurer;
+        }
+
+        /// <summary>
+        /// Checks if there is some treasures in the box where the adventurer will go
+        /// </summary>
+        /// <param name="TreasureList"></param>
+        /// <param name="hAxis"></param>
+        /// <param name="vAxis"></param>
+        /// <returns>Returns true if there is a treasure in the box where the adventurer will go</returns>
+        private static bool CheckTreasure(IEnumerable<Treasure> TreasureList, int hAxis, int vAxis)
+        {
+            bool boxWithTreasure = false;
+            foreach (var treasure in TreasureList)
+            {
+                if ((treasure.TreasureHorizontalAxis == hAxis) && (treasure.TreasureVerticalAxis == vAxis))
+                {
+                    boxWithTreasure = true;
+                }
+            }
+            return boxWithTreasure;
+        }
+
+        private static Treasure SelectTreasure(IEnumerable<Treasure> TreasureList, int hAxis, int vAxis)
+        {
+            Treasure selectedTreasure = new Treasure();
+
+            foreach (var treasure in TreasureList)
+            {
+                if ((treasure.TreasureHorizontalAxis == hAxis) && (treasure.TreasureVerticalAxis == vAxis))
+                {
+                    selectedTreasure = treasure;
+                }
+            }
+            return selectedTreasure;
         }
 
     }
