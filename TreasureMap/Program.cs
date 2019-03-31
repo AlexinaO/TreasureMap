@@ -35,7 +35,7 @@ namespace TreasureMap
         }
 
         ///<summary>
-        ///Display the entrance page with a menu
+        ///Displays the entrance page with a menu
         ///</summary>
         ///<returns>Return gamer choice</returns>
         static string PlayOrNot()
@@ -53,7 +53,7 @@ namespace TreasureMap
         }
 
         /// <summary>
-        /// Display the data from the entrance file
+        /// Displays the data from the entrance file
         /// </summary>
         static void DisplayData()
         {
@@ -88,6 +88,10 @@ namespace TreasureMap
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// Displays the data for the map
+        /// </summary>
+        /// <param name="map"></param>
         static void DisplayMap(Map map)
         {
             Console.WriteLine($"La carte fait {map.WidthBoxesNumber} cases en largeur " +
@@ -95,6 +99,10 @@ namespace TreasureMap
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Displays the data for the mountains
+        /// </summary>
+        /// <param name="MountainList"></param>
         static void DisplayMountainList(IEnumerable<Mountain> MountainList)
         {
             Console.WriteLine("La liste des montagnes est la suivante :");
@@ -105,6 +113,10 @@ namespace TreasureMap
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Displays the data for the treasures
+        /// </summary>
+        /// <param name="TreasureList"></param>
         static void DisplayTreasureList(IEnumerable<Treasure> TreasureList)
         {
             Console.WriteLine("La liste des trésors est la suivante :");
@@ -116,6 +128,10 @@ namespace TreasureMap
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Displays the data for the adventurers
+        /// </summary>
+        /// <param name="AdventurerList"></param>
         static void DisplayAdventurerList(IEnumerable<Adventurer> AdventurerList)
         {
             Console.WriteLine($"{AdventurerList.Count()} Chercheur(s) de trésors en compétition:");
@@ -128,6 +144,9 @@ namespace TreasureMap
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Displays a sentence to ask the user to push a key to come back to the menu
+        /// </summary>
         private static void BackToTheMenu()
         {
             Console.WriteLine();
@@ -137,6 +156,13 @@ namespace TreasureMap
         }
 
 
+        /// <summary>
+        /// To Move or not the adventurers and write an exit file
+        /// </summary>
+        /// <param name="AdventurerList"></param>
+        /// <param name="myMap"></param>
+        /// <param name="MountainList"></param>
+        /// <param name="TreasureList"></param>
         private static void AdventurersOnTheGo(IEnumerable<Adventurer> AdventurerList, Map myMap, IEnumerable<Mountain> MountainList, IEnumerable<Treasure> TreasureList)
         {
             //Determination of the maximum movement number
@@ -234,6 +260,7 @@ namespace TreasureMap
             service.CreateExitData(exitDataMap);
             Console.WriteLine("Le fichier de sortie a été enregistré avec succès dans le répertoire suivant:");
             Console.WriteLine("TreasureMap\\bin\\Debug");
+            BackToTheMenu();
         }
 
         /// <summary>
@@ -268,13 +295,21 @@ namespace TreasureMap
             return xy;
         }
 
+        /// <summary>
+        /// Determines if the adventurer can move or not
+        /// </summary>
+        /// <param name="adventurer"></param>
+        /// <param name="myMap"></param>
+        /// <param name="MountainList"></param>
+        /// <param name="AdventurerList"></param>
+        /// <param name="nextBoxCoordinates"></param>
+        /// <returns>Returns true if the adventurer can move</returns>
         private static bool AllowToMove(Adventurer adventurer, Map myMap,
             IEnumerable<Mountain> MountainList, IEnumerable<Adventurer> AdventurerList, int[] nextBoxCoordinates)
         {
             bool Moving = true;
 
-            //Move not authorized 
-            //1. When x<0 ou x>map width ou y<0 ou y>map height
+            //1. When an adventurer will go out of the map, he can't move
             if (nextBoxCoordinates[0] < 0
                 || nextBoxCoordinates[0] > myMap.WidthBoxesNumber - 1
                 || nextBoxCoordinates[1] < 0
@@ -283,13 +318,13 @@ namespace TreasureMap
                 Moving = false;
             }
 
-            //2. When there is a mountain in the box where the adventurer will go
+            //2. when a mountain is in the box in which the adventurer has to come
             if (CheckMountain(MountainList, nextBoxCoordinates[0], nextBoxCoordinates[1]) == true)
             {
                 Moving = false;
             }
 
-            //3. When there is an adventurer in the box where the adventurer will go
+            //3. when an adventurer is in the box in which another adventurer has to come
             if (CheckAdventurer(AdventurerList, nextBoxCoordinates[0], nextBoxCoordinates[1]) == true)
             {
                 Moving = false;
@@ -298,12 +333,12 @@ namespace TreasureMap
         }
 
         /// <summary>
-        /// Check Mountain checks if there is a mountain in the box where the adventurer will go
+        /// Checks if there is a mountain in the box where the adventurer has to come
         /// </summary>
         /// <param name="MountainList"></param>
         /// <param name="hAxis"></param>
         /// <param name="vAxis"></param>
-        /// <returns>Check mountain returns true if there is a mountain in the box where the adventurer will go</returns>
+        /// <returns>Returns true if there is a mountain in the box where the adventurer has to come</returns>
         private static bool CheckMountain(IEnumerable<Mountain> MountainList, int hAxis, int vAxis)
         {
             bool boxWithMountain = false;
@@ -318,12 +353,12 @@ namespace TreasureMap
         }
 
         /// <summary>
-        /// Checks if there is an adventurer in the box where the adventurer will go
+        /// Checks if there is an adventurer in the box in which another adventurer has to come
         /// </summary>
         /// <param name="AdventurerList"></param>
         /// <param name="hAxis"></param>
         /// <param name="vAxis"></param>
-        /// <returns>returns true if there is an adventurer in the box where the adventurer will go</returns>
+        /// <returns>returns true if there is an adventurer in the box in which another adventurer has to come</returns>
         private static bool CheckAdventurer(IEnumerable<Adventurer> AdventurerList, int hAxis, int vAxis)
         {
             bool boxWithAdventurer = false;
@@ -338,12 +373,12 @@ namespace TreasureMap
         }
 
         /// <summary>
-        /// Checks if there is some treasures in the box where the adventurer will go
+        /// Checks if there is some treasures in the box in which the adventurer has to come
         /// </summary>
         /// <param name="TreasureList"></param>
         /// <param name="hAxis"></param>
         /// <param name="vAxis"></param>
-        /// <returns>Returns true if there is a treasure in the box where the adventurer will go</returns>
+        /// <returns>Returns true if there is a treasure in which the adventurer has to come</returns>
         private static bool CheckTreasure(IEnumerable<Treasure> TreasureList, int hAxis, int vAxis)
         {
             bool boxWithTreasure = false;
@@ -357,6 +392,13 @@ namespace TreasureMap
             return boxWithTreasure;
         }
 
+        /// <summary>
+        /// Selects the treasure in the box in which the adventurer has to come
+        /// </summary>
+        /// <param name="TreasureList"></param>
+        /// <param name="hAxis"></param>
+        /// <param name="vAxis"></param>
+        /// <returns>Returns the selected treasure</returns>
         private static Treasure SelectTreasure(IEnumerable<Treasure> TreasureList, int hAxis, int vAxis)
         {
             Treasure selectedTreasure = new Treasure();
