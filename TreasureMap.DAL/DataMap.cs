@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace TreasureMap.DAL
 {
@@ -49,12 +50,25 @@ namespace TreasureMap.DAL
             return mountains;
         }
 
-        public void ExitFile(Map map, Adventurer adventurers, Treasure treasures, Mountain mountains)
+        /// <summary>
+        /// Method to save the data obtained at the end of the game in a exit txt file
+        /// </summary>
+        /// <param name="exitDataMap"></param>
+        public void SaveExitData(DataMap exitDataMap)
         {
-
-
+            if (this.currentMap != null)
+            {
+                this.WriteExitFile();
+            }
+            else
+            {
+                throw new MessageException("Il n'y a pas de carte valide donc impossible de créer le fichier de sortie");
+            }
         }
 
+        /// <summary>
+        /// Method to read the txt file containing the data before the beginning of the game
+        /// </summary>
         private void ReadFile()
         {
             this.currentMap = new Map();
@@ -133,6 +147,63 @@ namespace TreasureMap.DAL
             }
         }
 
-    }
+        /// <summary>
+        /// Method to write the exit data which will be saved in a txt file
+        /// </summary>
+        private void WriteExitFile()
+        {
+            var contentFile = new StringBuilder();
+            const string exitFileName = "FICHIER DE SORTIE DE LA CARTE AUX TRESORS";
+            const string exitFilePath = "TreasureMapExitFile.txt";
+            const string commentaryMap = "# {C comme Carte} - {Nb. de case en largeur} - {Nb. de case en hauteur}";
+            const string commentaryMountain = "# {M comme Montagne} - {Axe horizontal} - {Axe vertical}";
+            const string commentaryTreasure = "# {T comme Trésor} - {Axe horizontal} - {Axe vertical} - {Nb. de trésors restants}";
+            const string commentaryAdventurer = "# {A comme Aventurier} - {Nom de l’aventurier} - {Axe horizontal} - {Axe vertical} " +
+                "- {Orientation} - {Nb.trésors ramassés}";
 
+            contentFile.AppendLine(exitFileName);
+
+            //Write lines for the map
+            contentFile.AppendLine(commentaryMap);
+            contentFile.AppendLine(string.Join(FieldSeparator.ToString(),
+                currentMap.Code,
+                currentMap.WidthBoxesNumber,
+                currentMap.HeightBoxesNumber));
+
+            //Write lines for the mountains
+            contentFile.AppendLine(commentaryMountain);
+            foreach (var mountain in this.mountains)
+            {
+                contentFile.AppendLine(string.Join(FieldSeparator.ToString(),
+                    mountain.Code,
+                    mountain.MountainHorizontalAxis,
+                    mountain.MountainVerticalAxis));
+            }
+
+            //Write lines for the treasures
+            contentFile.AppendLine(commentaryTreasure);
+            foreach (var treasure in this.treasures)
+            {
+                contentFile.AppendLine(string.Join(FieldSeparator.ToString(),
+                    treasure.Code,
+                    treasure.TreasureHorizontalAxis,
+                    treasure.TreasureVerticalAxis,
+                    treasure.TreasureNumber));
+            }
+
+            //Write lines for the adventurers
+            contentFile.AppendLine(commentaryAdventurer);
+            foreach (var adventurer in this.adventurers)
+            {
+                contentFile.AppendLine(string.Join(FieldSeparator.ToString(),
+                    adventurer.Code,
+                    adventurer.Name,
+                    adventurer.AdventurerHorizontalAxis,
+                    adventurer.AdventurerVerticalAxis,
+                    adventurer.Orientation,
+                    adventurer.TreasureFound));
+            }
+            File.WriteAllText(exitFilePath, contentFile.ToString());
+        }
+    }
 }
