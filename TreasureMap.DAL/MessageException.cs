@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace TreasureMap.DAL
 {
-	public class MessageException : Exception
+    /// <summary>
+    /// Class to display a message for exception
+    /// </summary>
+    public class MessageException : Exception
 	{
 		public MessageException(string message) : base(message)
 		{ }

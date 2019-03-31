@@ -13,5 +13,11 @@ namespace TreasureMap.Business
         IEnumerable<Treasure> GetTreasures();
         IEnumerable<Adventurer> GetAdventurers();
         IEnumerable<Mountain> GetMountains();
+
+        /// <summary>
+        /// Method to create the data which will be in the exit txt file
+        /// </summary>
+        /// <param name="exitDataMap"></param>
+        void CreateExitData(DataMap exitDataMap);
     }
 }

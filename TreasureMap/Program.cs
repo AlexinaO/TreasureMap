@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TreasureMap.Business;
@@ -71,9 +71,9 @@ namespace TreasureMap
             Map myMap = myDataMap.GetDataMap();
 
             DisplayMap(myMap);
-            DisplayMountainList(service.GetMountains());
-            DisplayTreasureList(service.GetTreasures());
-            DisplayAdventurerList(service.GetAdventurers());
+            DisplayMountainList(myMountains);
+            DisplayTreasureList(mytreasures);
+            DisplayAdventurerList(myAdventurers);
             Console.WriteLine();
             Console.WriteLine("Faire partir les aventuriers à la recherche des trésors (O/N) ?");
             var adventureOrNot = Console.ReadLine();
@@ -81,7 +81,7 @@ namespace TreasureMap
             {
                 case "O":
                 case "o":
-                    AdventurersOnTheGo(service.GetAdventurers(), myMap, service.GetMountains(), service.GetTreasures());
+                    AdventurersOnTheGo(myAdventurers, myMap, myMountains, mytreasures);
                     break;
                 case "N":
                 case "n":

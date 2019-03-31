@@ -16,6 +16,10 @@ namespace TreasureMap.DAL
 
         IEnumerable<Mountain> GetMountainsList();
 
-        void ExitFile(Map map, Adventurer adventurer, Treasure treasure, Mountain mountain);
+        /// <summary>
+        /// Method to save the data obtained after the game which will be write in a text file
+        /// </summary>
+        /// <param name="exitDataMap"></param>
+        void SaveExitData (DataMap exitDataMap);
     }
 }
